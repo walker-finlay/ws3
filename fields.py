@@ -38,12 +38,13 @@ plt.grid(True)
 for i in cylinders:
     ax.add_patch(plt.Circle(i, radius=0.5))
 for i in cuboids:
+    # coppelia gives us the center, pyplot wants the bottom left
     alpha = i[5] # Euler angles
     rotation = array([[cos(alpha), -sin(alpha)],
                     [sin(alpha), cos(alpha)]]) # Rotation
     pt = array([-2, -0.5]) # Bottom left of the rectangle
     new_pt = rotation.dot(pt) + array([i[0], i[1]])
-    ax.add_patch(plt.Rectangle(new_pt, 4, 1, degrees(i[5])))
+    ax.add_patch(plt.Rectangle(new_pt, 4, 1, degrees(alpha)))
 
 plt.plot(7.625, 8.55, 'ro') # Omnirob
 plt.plot(-7.425, -7.925, 'go') # Goal 
