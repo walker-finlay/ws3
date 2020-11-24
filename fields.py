@@ -1,6 +1,7 @@
 import sim
 import sys
 from math import floor, degrees, sin, cos
+import numpy
 from numpy import array
 
 # From https://stackoverflow.com/questions/312443/how-do-you-split-a-list-into-evenly-sized-chunks
@@ -55,3 +56,8 @@ plt.xlim(-10,10)
 plt.ylim(-10,10)
 plt.gca().set_aspect("equal")
 plt.show(block=True)
+
+f = open("map.txt", "w")
+f.write(numpy.array2string(cuboids))
+f.write(numpy.array2string(cylinders))
+f.close()
