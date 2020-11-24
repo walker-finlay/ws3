@@ -1,4 +1,4 @@
-# Python breadth first-search (adjacency list representation)
+# Python breadth first-search for pathfinding (adjacency list representation)
 # Matthew Walker Finlay
 # November 2020
 
@@ -35,15 +35,3 @@ def bfs(G, s, d):
     return None
 
 
-# Testing
-graph = {
-    'r': ['s', 'v'],
-    's': ['r', 'w'],
-    't': ['w', 'x', 'u'],
-    'u': ['t', 'x', 'y'],
-    'v': ['r'],
-    'w': ['s', 't', 'x'],
-    'x': ['w', 't', 'u', 'y'],
-    'y': ['x', 'u']
-}
-print(bfs(graph, 's', 't'))
