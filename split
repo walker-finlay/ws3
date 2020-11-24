@@ -1,0 +1,4 @@
+#!/bin/bash
+
+sed '/^\s*$/q' map.txt >> cuboids.txt
+sed 1,/^\s*$/d map.txt >> cylinders.txt
