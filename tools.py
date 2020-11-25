@@ -39,27 +39,30 @@ def discretize(obstacles: np.array, objectives: np.array, n=20, diagonal=False):
     grid = np.zeros((n,n))
 
     # Rasterize cylinders
-    for cylinder in cylinders:
-        fillcircle(grid, (cylinder[0], cylinder[1]), cd/2)
+    for cylinder in cylinders: fillcircle(grid, (cylinder[0], cylinder[1]), cd/2)
     # Rasterize cuboids
+    for cuboid in cuboids: fillrectangle(grid, (cuboid[0], cuboid[1]), cuboid[5])
     # Transform centers & alphas to corners
 
     plot_obstacles(cuboids, cylinders, (rob, goal), shift=True, grid=grid, n=n)
 
 
-def center2corners(rectaangle):
-    # In : (x,y,_,_,_,gamma)
+def center2corners(center, alpha):
+    # In : (x,y,gamma)
     # Out: ((x1,y1),(x2,y2),(x3,y3),(x4,y4))
     tl = array([-rw/2, rh/2])
     tr = array([rw/2, rh/2])
     br = array([rw/2, -rh/2])
     bl = array([-rw/2, -rh/2])
+    corners = array([tl, tr, br, bl])
+    r = array([[-sin(alpha), cos(alpha)],
+               [cos(alpha),  sin(alpha)]])
+    return np.add(r.dot(corners.T).T, center)
 
-    return
-
-def fillrectangle(grid, rectangle):
+def fillrectangle(grid, center, alpha):
     # TODO: Implement me!
     # Convert center (x,y) and alpha to corners/line segments
+    corners = center2corners(center, alpha)
     return
 
 def fillcircle(grid, center, radius):
@@ -76,7 +79,6 @@ def fillcircle(grid, center, radius):
             d = sqrt(dx**2 + dy**2)
             if d <= radius+1:
                 grid[x,y] = 1
-    return
 
 def build_graph(n, heuristic=Manhattan):
     "Build adjacency list for bfs"
