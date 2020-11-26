@@ -43,10 +43,10 @@ def discretize(obstacles: np.array, objectives: np.array, n=20, diagonal=False):
     for i in (cuboids[:,0:2], cylinders[:,0:2], rob, goal): i += n/2
 
     grid = np.zeros((n,n))
-    # Rasterize cylinders
-    for cylinder in cylinders: fillcircle(grid, (cylinder[0], cylinder[1]), cd/2)
     # Rasterize cuboids
     for cuboid in cuboids: fillrectangle(grid, (cuboid[0], cuboid[1]), cuboid[5])
+    # Rasterize cylinders
+    for cylinder in cylinders: fillcircle(grid, (cylinder[0], cylinder[1]), cd/2)
 
     plot_obstacles(cuboids, cylinders, (rob, goal), grid=grid, n=n)
 
@@ -61,12 +61,32 @@ def center2corners(center, gamma):
 
 def draw_line(grid, edge):
     (x1,y1),(x2,y2) = edge
+    # We want to go toward positive x
     if x1 > x2: (x1,y1),(x2,y2) = (x2,y2),(x1,y1)
     dx = x2 - x1
     dy = y2 - y1
-    for x in range(int(x1),int(x2)):
+    for x in range(int(x1+0.5),int(x2+0.5)):
         y = int(y1 + dy*(x - x1) / dx)
         grid[x,y] = 1
+
+def fill_helper(grid, corners):
+    # Draw a box around it
+    xmax = int(max(corners[0])+0.5+1)
+    ymax = int(max(corners[1])+0.5+1)
+    xmin = int(min(corners[0])+0.5-1)
+    ymin = int(min(corners[1])+0.5-1)
+    # For every x in the box
+    for x in range(xmin, xmax):
+        fill = 0
+        # For every y in the box 
+        for y in range(ymin, ymax):
+            # if grid(x,y)==1 then fill = not fill
+            if grid[x,y] == 1:
+                fill = not fill
+                continue
+            grid[x,y] = fill
+            # if fill then grid(x,y) = 1
+    return
 
 def fillrectangle(grid, center, gamma):
     # TODO: Implement me!
@@ -76,6 +96,8 @@ def fillrectangle(grid, center, gamma):
                 (corners[:,1],corners[:,2]),
                 (corners[:,3],corners[:,0])])
     for edge in edges: draw_line(grid, edge)
+    # Now fill it
+    fill_helper(grid, corners)
 
 def fillcircle(grid, center, radius):
     "Set interior of circle to 1 in grid" # FIXME what if circle is outside grid?
