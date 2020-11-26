@@ -1,6 +1,23 @@
 from bfs import bfs
 from numpy import array
 import tools
+from copy import copy
+
+Manhattan = [
+    array([0,1]),
+    array([1,0]),
+    array([0,-1]),
+    array([-1,0])
+]
+Diagonal = copy(Manhattan)
+Diagonal.extend(
+    [
+        array([1,1]),
+        array([1,-1]),
+        array([-1,-1]),
+        array([-1,1])
+    ]
+)
 
 # Cylinders [x,y,z]
 cylinders = array([[-0.51850247, 6.2966156, 1.50205004],
@@ -35,4 +52,9 @@ graph = {
     'x': ['w', 't', 'u', 'y'],
     'y': ['x', 'u']
 }
-tools.discretize((cuboids, cylinders), (rob, goal),n=100)
+
+grid, poi = tools.discretize((cuboids, cylinders), (rob, goal),n=50)
+rob, goal = poi
+G = tools.build_graph(grid, heuristic=Diagonal)
+path = bfs(G, rob, goal)
+tools.plot_grid(grid,path)

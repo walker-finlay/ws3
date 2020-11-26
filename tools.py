@@ -3,20 +3,6 @@ from numpy import array, sin, cos, degrees, floor, ceil, sqrt
 import matplotlib.pyplot as plt 
 
 "---------- Globals ----------"
-Manhattan = [
-    array([0,1]),
-    array([1,0]),
-    array([0,-1]),
-    array([-1,0])
-]
-Diagonal = Manhattan.extend(
-    [
-        array([1,1]),
-        array([1,-1]),
-        array([-1,-1]),
-        array([-1,1])
-    ]
-)
 rw = None   # Rectangle width
 rh = None   # Rectangle height
 cd = None   # Cylinder diameter
@@ -47,10 +33,10 @@ def discretize(obstacles: np.array, objectives: np.array, n=20, diagonal=False):
     for cuboid in cuboids: fillrectangle(grid, (cuboid[0], cuboid[1]), cuboid[5])
     # Rasterize cylinders
     for cylinder in cylinders: fillcircle(grid, (cylinder[0], cylinder[1]), cd/2)
+    # Move rob and goal to the nearest integer
+    poi = (tuple(rob.astype(int)), tuple(goal.astype(int)))
 
-    # plot_obstacles(cuboids, cylinders, (rob, goal), grid=grid, n=n)
-
-    return grid
+    return grid, poi
 
 
 def center2corners(center, gamma):
@@ -110,7 +96,7 @@ def fillcircle(grid, center, radius):
             if d <= radius+1:
                 grid[x,y] = 1
 
-def build_graph(grid, heuristic=Manhattan):
+def build_graph(grid, heuristic):
     "Build adjacency list for bfs"
     G = {}
     n = len(grid)
@@ -159,3 +145,12 @@ def plot_obstacles(cbds, cyl, poi, n=20, grid=None):
 
     plt.gca().set_aspect("equal")
     plt.show(block=True)
+
+def plot_grid(grid, path=None):
+    if path is not None:
+        for p in path:
+            grid[p] = 2
+    fig, ax = plt.subplots()
+    ax.imshow(grid.T)
+    plt.gca().invert_yaxis()
+    plt.show()
