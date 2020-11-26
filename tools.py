@@ -9,7 +9,7 @@ Manhattan = [
     array([0,-1]),
     array([-1,0])
 ]
-Diagonal = Manhattan.append(
+Diagonal = Manhattan.extend(
     [
         array([1,1]),
         array([1,-1]),
@@ -48,7 +48,9 @@ def discretize(obstacles: np.array, objectives: np.array, n=20, diagonal=False):
     # Rasterize cylinders
     for cylinder in cylinders: fillcircle(grid, (cylinder[0], cylinder[1]), cd/2)
 
-    plot_obstacles(cuboids, cylinders, (rob, goal), grid=grid, n=n)
+    # plot_obstacles(cuboids, cylinders, (rob, goal), grid=grid, n=n)
+
+    return grid
 
 
 def center2corners(center, gamma):
@@ -70,33 +72,27 @@ def draw_line(grid, edge):
         grid[x,y] = 1
 
 def fill_helper(grid, corners):
+    "Use the drawn lines to fill by scanning vertically"
     # Draw a box around it
     xmax = int(max(corners[0])+0.5+1)
     ymax = int(max(corners[1])+0.5+1)
     xmin = int(min(corners[0])+0.5-1)
     ymin = int(min(corners[1])+0.5-1)
-    # For every x in the box
     for x in range(xmin, xmax):
         fill = 0
-        # For every y in the box 
         for y in range(ymin, ymax):
-            # if grid(x,y)==1 then fill = not fill
             if grid[x,y] == 1:
                 fill = not fill
                 continue
             grid[x,y] = fill
-            # if fill then grid(x,y) = 1
-    return
 
 def fillrectangle(grid, center, gamma):
-    # TODO: Implement me!
     corners = center2corners(center, gamma)
     edges = array([(corners[:,0],corners[:,1]),
                 (corners[:,2],corners[:,3]),
                 (corners[:,1],corners[:,2]),
                 (corners[:,3],corners[:,0])])
     for edge in edges: draw_line(grid, edge)
-    # Now fill it
     fill_helper(grid, corners)
 
 def fillcircle(grid, center, radius):
@@ -114,18 +110,20 @@ def fillcircle(grid, center, radius):
             if d <= radius+1:
                 grid[x,y] = 1
 
-def build_graph(n, heuristic=Manhattan):
+def build_graph(grid, heuristic=Manhattan):
     "Build adjacency list for bfs"
     G = {}
-    return
+    n = len(grid)
     for i in range(0, n):
         for j in range(0, n):
             current = (i,j)
             G[current] = []
             for direction in heuristic:
                 next = (i+direction[0], j+direction[1])
-                if next[0] >= 0 and next[0] < n and next[1] >= 0 and next[1] < n :
-                    G[current].append(next)
+                if next[0] >= 0 and next[0] < n and next[1] >= 0 and next[1] < n:
+                    if grid[next] == 0:
+                        G[current].append(next)
+    return G
 
 # Plotem ----------------------------------------------------------------------
 def plot_obstacles(cbds, cyl, poi, n=20, grid=None):
