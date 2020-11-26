@@ -24,11 +24,11 @@ some_corners = None
 
 def discretize(obstacles: np.array, objectives: np.array, n=20, diagonal=False):
     "gridworld is nxn"
-    # Setup
+    # Setup ----------------------
     global rw, rh, cd, some_corners
     cuboids, cylinders = obstacles
     rob, goal = objectives
-    # Map scaling
+    # Map scaling ----------------
     scale = n/20
     rw = 4*scale 
     rh = 1*scale 
@@ -39,11 +39,10 @@ def discretize(obstacles: np.array, objectives: np.array, n=20, diagonal=False):
     bl = array([-rw/2, -rh/2])  # |
     some_corners = array([tl, tr, br, bl]).T
     for i in (cuboids[:,0:2], cylinders[:,0:2], rob, goal): i *= scale
-    # Shift map over to positive coordinates
+    # Shift to pos. --------------
     for i in (cuboids[:,0:2], cylinders[:,0:2], rob, goal): i += n/2
 
     grid = np.zeros((n,n))
-
     # Rasterize cylinders
     for cylinder in cylinders: fillcircle(grid, (cylinder[0], cylinder[1]), cd/2)
     # Rasterize cuboids
@@ -61,14 +60,15 @@ def center2corners(center, gamma):
     return np.add(r.dot(some_corners).T, center).T
 
 def draw_line(grid, edge):
-    # TODO: Implement me!
     (x1,y1),(x2,y2) = edge
-    slope = (y2-y1)/(x2-x1)
-    for x in np.arange(int(x1),int(x2)):
-        grid[x, x+int(slope)] = 1
+    if x1 > x2: (x1,y1),(x2,y2) = (x2,y2),(x1,y1)
+    dx = x2 - x1
+    dy = y2 - y1
+    for x in range(int(x1),int(x2)):
+        y = int(y1 + dy*(x - x1) / dx)
+        grid[x,y] = 1
 
 def fillrectangle(grid, center, gamma):
-    return
     # TODO: Implement me!
     corners = center2corners(center, gamma)
     edges = array([(corners[:,0],corners[:,1]),
@@ -111,13 +111,9 @@ def plot_obstacles(cbds, cyl, poi, n=20, grid=None):
     offset = 0
 
     if grid is not None:
-        im = ax.imshow(grid.T)
         offset = 0.5
-    plt.gca().invert_xaxis()
-
-    testcorners = center2corners((cbds[0,0],cbds[0,1]), cbds[0,5])
-    plt.plot(testcorners[0]-offset,testcorners[1]-offset,'wo')
-    print(testcorners)
+        im = ax.imshow(grid.T)
+    plt.gca().invert_yaxis()
 
     if n < 30:
         plt.grid(which='both')
@@ -125,7 +121,7 @@ def plot_obstacles(cbds, cyl, poi, n=20, grid=None):
         ax.set_yticks(np.arange(-offset,n+1))
 
     for i in cyl: # -0.5 is to line it up with the imshow at low resolutions
-        ax.add_patch(plt.Circle(i-offset, radius=cd/2, alpha=0.75))
+        ax.add_patch(plt.Circle(i-offset, radius=cd/2, alpha=1-offset/2))
     for i in cbds:
         # coppelia gives us the center, pyplot wants the bottom left
         x = i[0]     # Initial position
@@ -135,7 +131,7 @@ def plot_obstacles(cbds, cyl, poi, n=20, grid=None):
                         [sin(gamma), cos(gamma)]]) # Rotation
         pt = array([(-rw/2), (-rh/2)]) # Bottom left of the rectangle
         new_pt = rotation.dot(pt) + array([x, y])
-        ax.add_patch(plt.Rectangle(new_pt-offset, rw, rh, degrees(gamma)))
+        ax.add_patch(plt.Rectangle(new_pt-offset, rw, rh, degrees(gamma), alpha=1-offset/2))
 
     rob, goal = poi
     plt.plot(*tuple(rob-offset), 'ro')     # Omnirob
