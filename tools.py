@@ -20,11 +20,12 @@ Diagonal = Manhattan.append(
 rw = None   # Rectangle width
 rh = None   # Rectangle height
 cd = None   # Cylinder diameter
+some_corners = None
 
 def discretize(obstacles: np.array, objectives: np.array, n=20, diagonal=False):
     "gridworld is nxn"
     # Setup
-    global rw, rh, cd
+    global rw, rh, cd, some_corners
     cuboids, cylinders = obstacles
     rob, goal = objectives
     # Map scaling
@@ -32,8 +33,13 @@ def discretize(obstacles: np.array, objectives: np.array, n=20, diagonal=False):
     rw = 4*scale 
     rh = 1*scale 
     cd = 1*scale 
+    tl = array([-rw/2, rh/2])   # Rectangle corners at the origin
+    tr = array([rw/2, rh/2])    # | this should only be
+    br = array([rw/2, -rh/2])   # | calculated once
+    bl = array([-rw/2, -rh/2])  # |
+    some_corners = array([tl, tr, br, bl]).T
     for i in (cuboids[:,0:2], cylinders[:,0:2], rob, goal): i *= scale
-    # Shift obstacles over to positive coordinates
+    # Shift map over to positive coordinates
     for i in (cuboids[:,0:2], cylinders[:,0:2], rob, goal): i += n/2
 
     grid = np.zeros((n,n))
@@ -42,27 +48,22 @@ def discretize(obstacles: np.array, objectives: np.array, n=20, diagonal=False):
     for cylinder in cylinders: fillcircle(grid, (cylinder[0], cylinder[1]), cd/2)
     # Rasterize cuboids
     for cuboid in cuboids: fillrectangle(grid, (cuboid[0], cuboid[1]), cuboid[5])
-    # Transform centers & alphas to corners
 
     plot_obstacles(cuboids, cylinders, (rob, goal), shift=True, grid=grid, n=n)
 
 
-def center2corners(center, alpha):
-    # In : (x,y,gamma)
+def center2corners(center, gamma):
+    # In : ((x,y),gamma)
     # Out: ((x1,y1),(x2,y2),(x3,y3),(x4,y4))
-    tl = array([-rw/2, rh/2])
-    tr = array([rw/2, rh/2])
-    br = array([rw/2, -rh/2])
-    bl = array([-rw/2, -rh/2])
-    corners = array([tl, tr, br, bl])
-    r = array([[-sin(alpha), cos(alpha)],
-               [cos(alpha),  sin(alpha)]])
-    return np.add(r.dot(corners.T).T, center)
+    r = array([[cos(gamma), -sin(gamma)],
+               [sin(gamma),  cos(gamma)]])
+    corners = np.add(r.dot(some_corners).T, center).T
+    return corners
 
-def fillrectangle(grid, center, alpha):
+def fillrectangle(grid, center, gamma):
     # TODO: Implement me!
-    # Convert center (x,y) and alpha to corners/line segments
-    corners = center2corners(center, alpha)
+    # Convert center (x,y) and gamma to corners/line segments
+    corners = center2corners(center, gamma)
     return
 
 def fillcircle(grid, center, radius):
@@ -117,12 +118,12 @@ def plot_obstacles(cbds, cyl, objectives, shift=False, n=20, grid=None):
         # coppelia gives us the center, pyplot wants the bottom left
         x = i[0]     # Initial position
         y = i[1]
-        alpha = i[5] # Euler angles
-        rotation = array([[cos(alpha), -sin(alpha)],
-                        [sin(alpha), cos(alpha)]]) # Rotation
+        gamma = i[5] # Euler angles
+        rotation = array([[cos(gamma), -sin(gamma)],
+                        [sin(gamma), cos(gamma)]]) # Rotation
         pt = array([(-rw/2), (-rh/2)]) # Bottom left of the rectangle
         new_pt = rotation.dot(pt) + array([x, y])
-        ax.add_patch(plt.Rectangle(new_pt-0.5, rw, rh, degrees(alpha)))
+        ax.add_patch(plt.Rectangle(new_pt-0.5, rw, rh, degrees(gamma)))
 
     rob, goal = objectives
     plt.plot(*tuple(rob-0.5), 'ro')     # Omnirob

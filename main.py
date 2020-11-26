@@ -35,4 +35,4 @@ graph = {
     'x': ['w', 't', 'u', 'y'],
     'y': ['x', 'u']
 }
-tools.discretize((cuboids, cylinders), (rob, goal),n=200)
+tools.discretize((cuboids, cylinders), (rob, goal),n=40)

@@ -29,11 +29,13 @@ def coppelia():
     result, handles, _, floatData, _ = sim.simxGetObjectGroupData(client_id, cylinders_handle, 3, sim.simx_opmode_blocking)
     cylinders = array(list(chunks(floatData, 3)))
 
-    return (cuboids, cylinders)
 
     sim.simxGetPingTime(client_id)  # Before closing the connection to CoppeliaSim, make sure that the last command sent out had time to arrive.
     sim.simxFinish(client_id)  # Now close the connection to CoppeliaSim:
     print('Connection closed')
+
+    return (cuboids, cylinders)
+
 
 cuboids, cylinders = coppelia
 plot_obstacles(cuboids, cylinders)
