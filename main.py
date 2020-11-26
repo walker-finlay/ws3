@@ -3,6 +3,8 @@ from astar import astar
 from numpy import array, zeros
 import tools
 from copy import copy
+from fields import cuboids2fields, cylinders2fields
+from Potential_functions import *
 
 Manhattan = [
     array([0,1]),
@@ -54,9 +56,16 @@ graph = {
     'y': ['x', 'u']
 }
 
-grid, poi = tools.discretize((cuboids, cylinders), (rob, goal),n=50)
-rob, goal = poi
-G = tools.build_graph(grid, heuristic=Diagonal)
-# path = bfs(G, rob, goal)
-path = astar(G, rob, goal)
-tools.plot_grid(grid,path)
+cub_fields = cuboids2fields(cuboids)
+cyl_fields = cylinders2fields(cylinders)
+obstacles = np.concatenate((cub_fields,cyl_fields),axis=0)
+plot_vector_field(np.append(goal, 0.02), obstacles)
+plt.gca().set_aspect("equal")
+plt.show()
+
+# grid, poi = tools.discretize((cuboids, cylinders), (rob, goal),n=50)
+# rob, goal = poi
+# G = tools.build_graph(grid, heuristic=Diagonal)
+# # path = bfs(G, rob, goal)
+# path = astar(G, rob, goal)
+# tools.plot_grid(grid,path)
