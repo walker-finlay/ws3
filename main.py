@@ -1,5 +1,6 @@
 from bfs import bfs
-from numpy import array
+from astar import astar
+from numpy import array, zeros
 import tools
 from copy import copy
 
@@ -56,5 +57,6 @@ graph = {
 grid, poi = tools.discretize((cuboids, cylinders), (rob, goal),n=50)
 rob, goal = poi
 G = tools.build_graph(grid, heuristic=Diagonal)
-path = bfs(G, rob, goal)
+# path = bfs(G, rob, goal)
+path = astar(G, rob, goal)
 tools.plot_grid(grid,path)

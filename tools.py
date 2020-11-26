@@ -81,6 +81,9 @@ def fillrectangle(grid, center, gamma):
     for edge in edges: draw_line(grid, edge)
     fill_helper(grid, corners)
 
+def distance():
+    return
+
 def fillcircle(grid, center, radius):
     "Set interior of circle to 1 in grid" # FIXME what if circle is outside grid?
     # Work on a little box around the circle
