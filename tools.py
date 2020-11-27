@@ -9,7 +9,7 @@ cd = None   # Cylinder diameter
 some_corners = None
 
 def discretize(obstacles: np.array, objectives: np.array, n=20, diagonal=False):
-    "gridworld is nxn"
+    """gridworld is nxn"""
     # Setup ----------------------
     global rw, rh, cd, some_corners
     cuboids, cylinders = obstacles
@@ -40,7 +40,7 @@ def discretize(obstacles: np.array, objectives: np.array, n=20, diagonal=False):
 
 
 def center2corners(center, gamma):
-    "returns corners as 2x4 array"
+    """returns corners as 2x4 array"""
     # In : ((x,y),gamma)
     # Out: ((x1,y1),(x2,y2),(x3,y3),(x4,y4))
     r = array([[cos(gamma), -sin(gamma)],
@@ -58,7 +58,7 @@ def draw_line(grid, edge):
         grid[x,y] = 1
 
 def fill_helper(grid, corners):
-    "Use the drawn lines to fill by scanning vertically"
+    """Use the drawn lines to fill by scanning vertically"""
     # Draw a box around it
     xmax = int(max(corners[0])+0.5+1)
     ymax = int(max(corners[1])+0.5+1)
@@ -85,7 +85,7 @@ def distance():
     return
 
 def fillcircle(grid, center, radius):
-    "Set interior of circle to 1 in grid" # FIXME what if circle is outside grid?
+    """Set interior of circle to 1 in grid""" # FIXME what if circle is outside grid?
     # Work on a little box around the circle
     x1 = int(center[0] - radius)        # Below right
     y1 = int(center[1] - radius)        # |
@@ -100,7 +100,7 @@ def fillcircle(grid, center, radius):
                 grid[x,y] = 1
 
 def build_graph(grid, heuristic):
-    "Build adjacency list for bfs"
+    """Build adjacency list for bfs"""
     G = {}
     n = len(grid)
     for i in range(0, n):
@@ -108,14 +108,38 @@ def build_graph(grid, heuristic):
             current = (i,j)
             G[current] = []
             for direction in heuristic:
-                next = (i+direction[0], j+direction[1])
-                if next[0] >= 0 and next[0] < n and next[1] >= 0 and next[1] < n:
-                    if grid[next] == 0:
-                        G[current].append(next)
+                next_node = (i+direction[0], j+direction[1])
+                if next_node[0] >= 0 and next_node[0] < n and next_node[1] >= 0 and next_node[1] < n and grid[next_node] == 0:
+                    G[current].append(next_node)
     return G
+
+def path2waypoints(path, n, m, t):
+    """turn path from nxn grid into waypoints
+    in mxm space with time t to get to adjacent squares
+    centered at (0,0)"""
+    time = 0
+    scale = m/n
+    waypoints = []
+    i = 0
+    time_diag = t * (1 + (sqrt(2)/2))
+    for square in path:
+        time = t
+        if i < len(path)-1: # It should travel slower on diagonals
+            next_square = path[i+1]
+            if abs(next_square[0] - square[0]) > 0.1 and abs(next_square[1] - square[1]) > 0.1:
+                time = time_diag
+        # Scale & shift to (0,0)
+        scaled = (scale * square[0] - m/2, scale * square[1] - m/2)
+        waypoints.append([scaled,time])
+        i += 1
+    return waypoints
 
 # Plotem ----------------------------------------------------------------------
 def plot_obstacles(cbds, cyl, poi, n=20, grid=None):
+    """Keyword arguments:  
+    n -- the size of the map  
+    grid -- optional grid to overlay
+    """
     fig,ax = plt.subplots()
     offset = 0
 

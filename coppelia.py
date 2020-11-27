@@ -34,14 +34,13 @@ def coppelia():
     sim.simxFinish(client_id)  # Now close the connection to CoppeliaSim:
     print('Connection closed')
 
+    print('Got obstacles')
     return (cuboids, cylinders)
 
-
-cuboids, cylinders = coppelia
-plot_obstacles(cuboids, cylinders)
-
-def write_out():
-    f = open("map.txt", "w")
+def write_out(cuboids, cylinders):
+    f = open("cuboids.txt", "w")
+    f1 = open("cylinders.txt", "w")
     f.write(numpy.array2string(cuboids))
-    f.write(numpy.array2string(cylinders))
+    f1.write(numpy.array2string(cylinders))
     f.close()
+    f1.close()

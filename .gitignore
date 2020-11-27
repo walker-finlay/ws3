@@ -6,3 +6,5 @@ simConst.py
 robot.py
 remoteApi.dylib
 intro_coppelia_part2.ipynb
+.DS_Store
+videos/

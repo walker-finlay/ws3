@@ -59,12 +59,12 @@ graph = {
 
 
 # Potential Fields
-# cub_fields = cuboids2fields(cuboids)
-# cyl_fields = cylinders2fields(cylinders)
-# obstacles = concatenate((cub_fields,cyl_fields),axis=0)
-# plot_vector_field(append(goal, 0.02), obstacles)
-# plt.gca().set_aspect("equal")
-# plt.show()
+cub_fields = cuboids2fields(cuboids)
+cyl_fields = cylinders2fields(cylinders)
+obstacles = concatenate((cub_fields,cyl_fields),axis=0)
+plot_vector_field(append(goal, 0.02), obstacles)
+plt.gca().set_aspect("equal")
+plt.show()
 
 # Graph algorithms
 # grid, poi = tools.discretize((cuboids, cylinders), (rob, goal),n=50)
