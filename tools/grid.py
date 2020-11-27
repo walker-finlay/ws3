@@ -28,7 +28,7 @@ def discretize(obstacles: np.array, objectives: np.array, n=20, diagonal=False):
     # Shift to pos. --------------
     for i in (cuboids[:,0:2], cylinders[:,0:2], rob, goal): i += n/2
 
-    grid = np.zeros((n,n))
+    grid = np.zeros((n,n), dtype=np.int8)
     # Rasterize cuboids
     for cuboid in cuboids: fillrectangle(grid, (cuboid[0], cuboid[1]), cuboid[5])
     # Rasterize cylinders
