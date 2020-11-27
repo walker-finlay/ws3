@@ -10,3 +10,4 @@ python version: 3.7.9
 <span><img src="images/Figure_2.png" alt="drawing" width="400"/></span>
 <span><img src="images/Figure_3.png" alt="drawing" width="400"/></span>
 <span><img src="images/Figure_4.png" alt="drawing" width="400"/></span>
+<span><img src="images/big_map.png" alt="drawing" width="400"/></span>
