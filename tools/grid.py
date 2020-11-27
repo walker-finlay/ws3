@@ -64,14 +64,18 @@ def fill_helper(grid, corners):
     ymax = int(max(corners[1])+0.5+1)
     xmin = int(min(corners[0])+0.5-1)
     ymin = int(min(corners[1])+0.5-1)
+    first = None
     for x in range(xmin, xmax):
         fill = 0
         for y in range(ymin, ymax):
             if grid[x,y] == 1:
+                first = y
                 fill = not fill
                 continue
             grid[x,y] = fill
-        # What if there is only one pixel in the frame?
+        # What if there is only one pixel in the column?
+        if fill == 1:
+            grid[x,first:] = 0
 
 def fillrectangle(grid, center, gamma):
     corners = center2corners(center, gamma)

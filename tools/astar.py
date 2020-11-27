@@ -23,9 +23,9 @@ def astar(G, s, ds):
     came_from = {}
     came_from[s] = None
     n=len(G)
-    g_score = np.full((n,n),inf)
+    g_score = np.full((n,n),inf, dtype=np.float32)
     g_score[s] = 0
-    f_score = np.full((n,n),inf)
+    f_score = np.full((n,n),inf, dtype=np.float32)
     f_score[s] = h(s)
     while open_set:
         current = heappop(open_set)
