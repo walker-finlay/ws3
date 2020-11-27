@@ -71,6 +71,7 @@ def fill_helper(grid, corners):
                 fill = not fill
                 continue
             grid[x,y] = fill
+        # What if there is only one pixel in the frame?
 
 def fillrectangle(grid, center, gamma):
     corners = center2corners(center, gamma)
@@ -112,6 +113,16 @@ def build_graph(grid, heuristic):
                 if next_node[0] >= 0 and next_node[0] < n and next_node[1] >= 0 and next_node[1] < n and grid[next_node] == 0:
                     G[current].append(next_node)
     return G
+
+
+# Get path
+def backtrace(node, parent):
+    path = [node]
+    while parent[node]:
+        path.append(parent[node])
+        node = parent[node]
+    path.reverse()
+    return path
 
 def path2waypoints(path, n, m, t):
     """turn path from nxn grid into waypoints

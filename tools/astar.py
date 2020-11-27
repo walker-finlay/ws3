@@ -1,9 +1,8 @@
-from bfs import backtrace
+from . import grid
 from math import inf
 import numpy as np
 from numpy import array
 from heapq import heappush, heappop
-from tools import build_graph
 from copy import copy
 
 def astar(G, s, ds):
@@ -31,7 +30,7 @@ def astar(G, s, ds):
     while open_set:
         current = heappop(open_set)
         if current == ds:
-            return backtrace(current, came_from)
+            return grid.backtrace(current, came_from)
         for neighbor in G[current]:
             tentative_gscore = g_score[current] + d(current, neighbor)
             if tentative_gscore < g_score[neighbor]:

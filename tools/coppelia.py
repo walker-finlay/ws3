@@ -3,7 +3,6 @@ import sys
 from math import floor, degrees, sin, cos
 import numpy
 from numpy import array
-from tools import plot_obstacles
 
 def coppelia():
     # From https://stackoverflow.com/questions/312443/how-do-you-split-a-list-into-evenly-sized-chunks

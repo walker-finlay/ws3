@@ -2,15 +2,7 @@
 # Matthew Walker Finlay
 # November 2020
 
-# Get path
-def backtrace(node, parent):
-    path = [node]
-    while parent[node]:
-        path.append(parent[node])
-        node = parent[node]
-    path.reverse()
-    return path
-
+from . import grid
 
 # BFS for robot path finding
 def bfs(G, s, d):
@@ -29,7 +21,7 @@ def bfs(G, s, d):
             if neighbor not in visited:
                 parent[neighbor] = s
                 if neighbor == d:
-                    return backtrace(neighbor, parent)
+                    return grid.backtrace(neighbor, parent)
                 visited.append(neighbor)
                 Q.append(neighbor)
     return None
