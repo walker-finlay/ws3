@@ -1,10 +1,11 @@
 from bfs import bfs
 from astar import astar
-from numpy import array, zeros
+from numpy import array, zeros, concatenate, append
 import tools
 from copy import copy
 from fields import cuboids2fields, cylinders2fields
-from Potential_functions import *
+from Potential_functions import plot_vector_field
+from matplotlib import pyplot as plt
 
 Manhattan = [
     array([0,1]),
@@ -56,13 +57,16 @@ graph = {
     'y': ['x', 'u']
 }
 
-cub_fields = cuboids2fields(cuboids)
-cyl_fields = cylinders2fields(cylinders)
-obstacles = np.concatenate((cub_fields,cyl_fields),axis=0)
-plot_vector_field(np.append(goal, 0.02), obstacles)
-plt.gca().set_aspect("equal")
-plt.show()
 
+# Potential Fields
+# cub_fields = cuboids2fields(cuboids)
+# cyl_fields = cylinders2fields(cylinders)
+# obstacles = concatenate((cub_fields,cyl_fields),axis=0)
+# plot_vector_field(append(goal, 0.02), obstacles)
+# plt.gca().set_aspect("equal")
+# plt.show()
+
+# Graph algorithms
 # grid, poi = tools.discretize((cuboids, cylinders), (rob, goal),n=50)
 # rob, goal = poi
 # G = tools.build_graph(grid, heuristic=Diagonal)

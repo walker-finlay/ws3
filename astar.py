@@ -2,7 +2,7 @@ from bfs import backtrace
 from math import inf
 import numpy as np
 from numpy import array
-from heapq import *
+from heapq import heappush, heappop
 from tools import build_graph
 from copy import copy
 
