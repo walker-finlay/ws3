@@ -73,7 +73,6 @@ def fill_helper(grid, corners):
                 fill = not fill
                 continue
             grid[x,y] = fill
-        # What if there is only one pixel in the column?
         if fill == 1:
             grid[x,first:] = 0
 
