@@ -1,3 +1,6 @@
+"""Get obstacles from coppeliasim and optionally output them to a file\n
+Walker Finlay"""
+
 import sim
 import sys
 from math import floor, degrees, sin, cos

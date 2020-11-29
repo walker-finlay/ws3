@@ -1,24 +1,32 @@
+""" Walker Finlay
+Helper functions for grid and graph creation """
+
 import numpy as np
 from numpy import array, sin, cos, degrees, floor, ceil, sqrt
 import matplotlib.pyplot as plt 
 
 "---------- Globals ----------"
+size = 20
 rw = None   # Rectangle width
 rh = None   # Rectangle height
 cd = None   # Cylinder diameter
 some_corners = None
 
-def discretize(obstacles: np.array, objectives: np.array, n=20, diagonal=False):
-    """gridworld is nxn"""
+def discretize(obstacles: np.array, objectives: np.array, n=20, diagonal:bool=False, sf:float=1.0):
+    """gridworld is nxn, takes obstacles=(cuboids,cylinders), objectives = (rob,goal)\n
+    Keyword Arguments:\n
+    sf: float => scaling factor - grow obstacles so rob doesn't crash into them\n
+    diagonal: bool => allow diagonal movement?"""
     # Setup ----------------------
-    global rw, rh, cd, some_corners
+    global rw, rh, cd, some_corners, size
+    size = n
     cuboids, cylinders = obstacles
     rob, goal = objectives
     # Map scaling ----------------
     scale = n/20
-    rw = 4*scale 
-    rh = 1*scale 
-    cd = 1*scale 
+    rw = 4*scale*sf
+    rh = 1*scale*sf
+    cd = 1*scale*sf 
     tl = array([-rw/2, rh/2])   # Rectangle corners at the origin
     tr = array([rw/2, rh/2])    # | this should only be
     br = array([rw/2, -rh/2])   # | calculated once
@@ -54,8 +62,9 @@ def draw_line(grid, edge):
     dx = x2 - x1
     dy = y2 - y1
     for x in range(int(x1+0.5),int(x2+0.5)):
-        y = int(y1 + dy*(x - x1) / dx)
-        grid[x,y] = 1
+        if not (x2 >= size):
+            y = int(y1 + dy*(x - x1) / dx)
+            grid[x,y] = 1
 
 def fill_helper(grid, corners):
     """Use the drawn lines to fill by scanning vertically"""
@@ -67,14 +76,15 @@ def fill_helper(grid, corners):
     first = None
     for x in range(xmin, xmax):
         fill = 0
-        for y in range(ymin, ymax):
-            if grid[x,y] == 1:
-                first = y
-                fill = not fill
-                continue
-            grid[x,y] = fill
-        if fill == 1:
-            grid[x,first:] = 0
+        if not (x >= size):
+            for y in range(ymin, ymax):
+                if grid[x,y] == 1:
+                    first = y
+                    fill = not fill
+                    continue
+                grid[x,y] = fill
+            if fill == 1:
+                grid[x,first:] = 0
 
 def fillrectangle(grid, center, gamma):
     corners = center2corners(center, gamma)

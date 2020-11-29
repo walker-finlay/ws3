@@ -1,6 +1,6 @@
-# Python breadth first-search for pathfinding (adjacency list representation)
-# Matthew Walker Finlay
-# November 2020
+"""Basic breadth first-search for pathfinding (adjacency list representation as dictionary)\n
+Matthew Walker Finlay\n
+November 2020"""
 
 from . import grid
 

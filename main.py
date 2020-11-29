@@ -67,7 +67,7 @@ graph = {
 # plt.show()
 
 # Graph algorithms
-grid, poi = discretize((cuboids, cylinders), (rob, goal),n=50)
+grid, poi = discretize((cuboids, cylinders), (rob, goal),n=75, sf=1.4)
 rob, goal = poi
 G = build_graph(grid, heuristic=Diagonal)
 # path = bfs(G, rob, goal)

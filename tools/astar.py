@@ -1,3 +1,7 @@
+"""Walker Finlay\n
+Simple A* implementation for pathfinding\n
+Takes graph as adjacency list as dictionary"""
+
 from . import grid
 from math import inf
 import numpy as np
