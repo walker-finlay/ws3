@@ -1,3 +1,8 @@
+"""
+Communication with coppeliasim\n
+Forked from https://github.com/dsaldana/CSE360-MobileRobotics
+"""
+
 import sim
 import numpy
 from numpy import array
