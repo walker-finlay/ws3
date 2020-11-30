@@ -1,3 +1,5 @@
+"""This file is for testing only."""
+
 from tools.bfs import bfs
 from tools.astar import astar
 from numpy import array, zeros, concatenate, append
