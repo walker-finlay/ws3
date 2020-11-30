@@ -62,7 +62,7 @@ def draw_line(grid, edge):
     dx = x2 - x1
     dy = y2 - y1
     for x in range(int(x1+0.5),int(x2+0.5)):
-        if not (x2 >= size):
+        if not (x >= size):
             y = int(y1 + dy*(x - x1) / dx)
             grid[x,y] = 1
 
@@ -76,15 +76,16 @@ def fill_helper(grid, corners):
     first = None
     for x in range(xmin, xmax):
         fill = 0
-        if not (x >= size):
-            for y in range(ymin, ymax):
-                if grid[x,y] == 1:
-                    first = y
-                    fill = not fill
-                    continue
-                grid[x,y] = fill
-            if fill == 1:
-                grid[x,first:] = 0
+        if (x >= size): continue
+        for y in range(ymin, ymax):
+            if grid[x,y] == 1:
+                first = y
+                fill += 1
+                if fill == 2: break
+                continue
+            grid[x,y] = fill
+        if fill == 1: 
+            grid[x,first:ymax] = 0
 
 def fillrectangle(grid, center, gamma):
     corners = center2corners(center, gamma)

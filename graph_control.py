@@ -1,9 +1,9 @@
-from coppelia import coppelia
-from bfs import bfs
-from astar import astar
+from tools.coppelia import coppelia
+from tools.bfs import bfs
+from tools.astar import astar
+from tools.grid import discretize, build_graph, path2waypoints, plot_grid
 from robot import robot
 from numpy import array, linspace
-import tools
 import time
 
 
@@ -28,9 +28,9 @@ rob = r.get_position()[0:2]
 goal = r.get_object_position('Sphere9')[0:2]
 
 # Discretize, build graph, bfs
-grid, poi = tools.discretize((cuboids, cylinders), (rob, goal),n=50)
+grid, poi = discretize((cuboids, cylinders), (rob, goal),n=50, sf=2)
 rob, goal = poi # Points of interest in discrete coordinates
-G = tools.build_graph(grid, heuristic=Diagonal)
+G = build_graph(grid, heuristic=Diagonal)
 # path = bfs(G, rob, goal)
 path = astar(G, rob, goal)
 
@@ -38,7 +38,7 @@ path = astar(G, rob, goal)
 n = len(grid)
 # Array of waypoints looking like [center, time]
 # Scaled and shifted to coppelia map
-waypoints = tools.path2waypoints(path, n, 20, 0.2)
+waypoints = path2waypoints(path, n, 20, 0.5)
 
 # Execute it as a polyline trajectory
 i = 0
