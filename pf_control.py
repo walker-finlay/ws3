@@ -1,9 +1,9 @@
 import numpy as np
 from time import sleep
-from Potential_functions import total_force
-from fields import cuboids2fields, cylinders2fields
-from coppelia import coppelia
-from robot import robot
+from tools.Potential_functions import total_force
+from tools.fields import cuboids2fields, cylinders2fields
+from tools.coppelia import coppelia
+from tools.robot import robot
 
 # Setup ---------------------------------------------------
 # Get the locations of the obstacles from sim

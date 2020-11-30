@@ -2,7 +2,7 @@ from tools.coppelia import coppelia
 from tools.bfs import bfs
 from tools.astar import astar
 from tools.grid import discretize, build_graph, path2waypoints, plot_grid
-from robot import robot
+from tools.robot import robot
 from numpy import array, linspace
 import time
 

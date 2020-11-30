@@ -3,7 +3,6 @@ __pycache__/
 .ipynb_checkpoints/
 sim.py
 simConst.py
-robot.py
 remoteApi.dylib
 intro_coppelia_part2.ipynb
 .DS_Store
