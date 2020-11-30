@@ -76,7 +76,7 @@ def fill_helper(grid, corners):
     first = None
     for x in range(xmin, xmax):
         fill = 0
-        if (x >= size): continue
+        if (x >= size): break
         for y in range(ymin, ymax):
             if grid[x,y] == 1:
                 first = y
