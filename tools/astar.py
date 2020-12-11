@@ -8,6 +8,13 @@ import numpy as np
 from numpy import array
 from heapq import heappush, heappop
 from copy import copy
+from dataclasses import dataclass, field
+from typing import Any
+
+@dataclass(order=True)
+class PrioritizedItem:
+    priority: int
+    item: Any=field(compare=False)
 
 def astar(G, s, ds):
 
@@ -22,8 +29,6 @@ def astar(G, s, ds):
         "Distance to goal"
         return d(n,ds)
 
-    open_set = []
-    heappush(open_set,s)
     came_from = {}
     came_from[s] = None
     n=len(G)
@@ -31,8 +36,11 @@ def astar(G, s, ds):
     g_score[s] = 0
     f_score = np.full((n,n),inf, dtype=np.float32)
     f_score[s] = h(s)
+    
+    open_set = []
+    heappush(open_set,PrioritizedItem(f_score[s], s))
     while open_set:
-        current = heappop(open_set)
+        current = heappop(open_set).item
         if current == ds:
             return grid.backtrace(current, came_from)
         for neighbor in G[current]:
@@ -42,5 +50,5 @@ def astar(G, s, ds):
                 g_score[neighbor] = tentative_gscore
                 f_score[neighbor] = g_score[neighbor] + h(neighbor)
                 if neighbor not in open_set:
-                    heappush(open_set, neighbor)
+                    heappush(open_set, PrioritizedItem(f_score[neighbor], neighbor))
     return None
